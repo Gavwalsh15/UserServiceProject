@@ -12,12 +12,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Entity//idk what this does but it fix my error
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateUser {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignIn {
-
     @Email(message = "Invalid email address")
     private String email;
 

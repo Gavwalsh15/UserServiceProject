@@ -19,7 +19,7 @@ public class UserService {
     }
 
     public boolean authenticate(String email, String password) {
-        //allows it to be null and such
+        //Optional allows it to be null and such
         Optional<CreateUser> optionalUser = userRepo.findByEmail(email);
 
         //i find this quite hard to undersstand on glance might change later with an if else

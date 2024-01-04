@@ -35,9 +35,15 @@ public class UserController {
     @PostMapping("/signin")
     public ResponseEntity<String> signIn(@Valid @RequestBody SignIn signInRequest) {
 
-        boolean authenticated = userService.authenticate(signInRequest.getEmail(), signInRequest.getPassword());
+        boolean emailExists = userService.existsByEmail(signInRequest.getEmail());
 
-        if (authenticated) {
+        if (!emailExists){
+            return new ResponseEntity<>("Email Doesn't Exist", HttpStatus.UNAUTHORIZED);
+        }
+
+        boolean correctCredentials = userService.authenticate(signInRequest.getEmail(), signInRequest.getPassword());
+
+        if (correctCredentials) {
             return new ResponseEntity<>("User successfully signed in", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
