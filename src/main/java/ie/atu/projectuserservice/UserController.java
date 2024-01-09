@@ -11,9 +11,14 @@ import jakarta.validation.Valid;
 public class UserController {
     private final UserService userService;
 
+    private final BankServiceClient bankServiceClient;
+
+    private Bank bank;
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, BankServiceClient bankServiceClient) {
         this.userService = userService;
+        this.bankServiceClient = bankServiceClient;
     }
 
     @PostMapping("/signup")
@@ -27,6 +32,13 @@ public class UserController {
 
         // If the email doesn't exist, proceed with creating the user
         userService.createUser(user);
+
+        this.bank = new Bank();
+
+        bank.setBalance(1000);
+        bank.setEmail(user.getEmail());
+
+        bankServiceClient.createBank(bank);
 
         return new ResponseEntity<>("User successfully created", HttpStatus.CREATED);
     }
