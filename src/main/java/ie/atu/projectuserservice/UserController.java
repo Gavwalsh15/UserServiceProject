@@ -36,7 +36,7 @@ public class UserController {
 
         this.bank = new Bank();
 
-        bank.setBalance(1000);
+        bank.setBalance(100000);
         bank.setEmail(user.getEmail());
 
         bankServiceClient.createBank(bank);
