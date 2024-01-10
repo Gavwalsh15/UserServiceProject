@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>atu.ie</groupId>
-	<artifactId>TransactionServiceProject</artifactId>
+	<artifactId>UserServiceProject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>TransactionServiceProject</name>
-	<description>TransactionServiceProject</description>
+	<name>UserServiceProject</name>
+	<description>UserServiceProject</description>
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2023.0.0</spring-cloud.version>
