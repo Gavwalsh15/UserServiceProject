@@ -12,9 +12,14 @@ import jakarta.validation.Valid;
 public class UserController {
     private final UserService userService;
 
+    private final BankServiceClient bankServiceClient;
+
+    private Bank bank;
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, BankServiceClient bankServiceClient) {
         this.userService = userService;
+        this.bankServiceClient = bankServiceClient;
     }
 
     @PostMapping("/signup")
@@ -29,6 +34,13 @@ public class UserController {
         // If the email doesn't exist, proceed with creating the user
         userService.createUser(user);
 
+        this.bank = new Bank();
+
+        bank.setBalance(1000);
+        bank.setEmail(user.getEmail());
+
+        bankServiceClient.createBank(bank);
+
         return new ResponseEntity<>("User successfully created", HttpStatus.CREATED);
     }
 
@@ -36,9 +48,15 @@ public class UserController {
     @PostMapping("/signin")
     public ResponseEntity<String> signIn(@Valid @RequestBody SignIn signInRequest) {
 
-        boolean authenticated = userService.authenticate(signInRequest.getEmail(), signInRequest.getPassword());
+        boolean emailExists = userService.existsByEmail(signInRequest.getEmail());
 
-        if (authenticated) {
+        if (!emailExists){
+            return new ResponseEntity<>("Email Doesn't Exist", HttpStatus.UNAUTHORIZED);
+        }
+
+        boolean correctCredentials = userService.authenticate(signInRequest.getEmail(), signInRequest.getPassword());
+
+        if (correctCredentials) {
             return new ResponseEntity<>("User successfully signed in", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
@@ -47,7 +65,7 @@ public class UserController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        StringBuilder errorMessage = new StringBuilder("Validation errors:\n");
+        StringBuilder errorMessage = new StringBuilder();
         ex.getBindingResult().getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("\n"));
 
         return new ResponseEntity<>(errorMessage.toString(), HttpStatus.BAD_REQUEST);
